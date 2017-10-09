@@ -1,5 +1,6 @@
 package org.aming.web.qq.repository.jdbc.impl;
 
+import com.google.common.collect.Maps;
 import org.aming.web.qq.domain.Message;
 import org.aming.web.qq.domain.Page;
 import org.aming.web.qq.domain.User;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.lang.reflect.Type;
 import java.sql.Types;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author daming
@@ -38,6 +40,9 @@ public class MessageDaoImpl implements MessageDao {
 
     private static final String SQL_GET_MESSAGE = "SELECT id,sendUserId,receiveUserId,content,sendDate,sendDeleteFlag,receiveDeleteFlag FROM message A  WHERE (A.sendUserId = ? AND A.receiveUserId = ?) OR (A.sendUserId = ? AND A.receiveUserId = ?) ORDER BY A.sendDate DESC LIMIT ?,?";
     public List<Message> getMessage(User sendUser, User receiveUser, Page page) {
+        Map<String,User> map = Maps.newHashMap();
+        map.put(sendUser.getId(),sendUser);
+        map.put(receiveUser.getId(),receiveUser);
         Object[] args = new Object[]{
                 sendUser.getId(),
                 receiveUser.getId(),
@@ -61,8 +66,8 @@ public class MessageDaoImpl implements MessageDao {
                 (rs, i) -> {
                     return new Message()
                             .setId(rs.getString("id"))
-                            .setSendUser(sendUser)
-                            .setReceiveUser(receiveUser)
+                            .setSendUser(map.get(rs.getString("sendUserId")))
+                            .setReceiveUser(map.get(rs.getString("receiveUserId")))
                             .setContent(rs.getString("content"))
                             .setSendDate(rs.getTimestamp("sendDate"))
                             .setSendDeleteFlag(rs.getInt("sendDeleteFlag"))
