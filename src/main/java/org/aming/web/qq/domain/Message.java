@@ -27,58 +27,64 @@ public class Message implements Serializable {
         return id;
     }
 
-    public void setId(String id) {
+    public Message setId(String id) {
         this.id = id;
+        return this;
     }
 
     public User getSendUser() {
         return sendUser;
     }
 
-    public void setSendUser(User sendUser) {
+    public Message setSendUser(User sendUser) {
         this.sendUser = sendUser;
+        return this;
     }
 
     public User getReceiveUser() {
         return receiveUser;
     }
 
-    public void setReceiveUser(User receiveUser) {
+    public Message setReceiveUser(User receiveUser) {
         this.receiveUser = receiveUser;
+        return this;
     }
 
     public String getContent() {
         return content;
     }
 
-    public void setContent(String content) {
+    public Message setContent(String content) {
         this.content = content;
+        return this;
     }
 
-    public Date getSendDate() {
+    public Timestamp getSendDate() {
         return sendDate;
     }
 
-    public void setSendDate(Timestamp sendDate) {
+    public Message setSendDate(Timestamp sendDate) {
         this.sendDate = sendDate;
+        return this;
     }
 
     public int getSendDeleteFlag() {
         return sendDeleteFlag;
     }
 
-    public void setSendDeleteFlag(int sendDeleteFlag) {
+    public Message setSendDeleteFlag(int sendDeleteFlag) {
         this.sendDeleteFlag = sendDeleteFlag;
+        return this;
     }
 
     public int getReceiveDeleteFlag() {
         return receiveDeleteFlag;
     }
 
-    public void setReceiveDeleteFlag(int receiveDeleteFlag) {
+    public Message setReceiveDeleteFlag(int receiveDeleteFlag) {
         this.receiveDeleteFlag = receiveDeleteFlag;
+        return this;
     }
-
 
     public Message() {
         super();
