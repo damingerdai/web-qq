@@ -35,3 +35,6 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+
+### Angular2 ###
+scr/main/reousces/static/
