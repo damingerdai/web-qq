@@ -40,7 +40,6 @@ export class ChatRoomComponent implements OnInit, AfterContentInit {
         .subscribe(
           data => {
             this.messages = data['data'];
-            console.log(JSON.stringify(this.messages));
           }
         );
   }

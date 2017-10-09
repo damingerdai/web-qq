@@ -3,11 +3,16 @@
      <div class="col-md-5">
        <h2>我的聊天对象：{{friend}}</h2>
         <div class="form-group chat-area">
-          <table class="table" *ngFor="let message of messages">
-            <th class="messagebox">
-              <tr>{{message.sendDate | date:"yy-MM-dd:hh:mm"}}</tr>
-              <tr>{{message.content}}</tr>
+          <table class="table"  *ngFor="let message of messages">
+            <th class="messagebox" [style.float]="message.receiveUser.username == friend ? 'right' : 'left'">
+              <tr>
+                  {{message.sendDate | date:"yy-MM-dd:hh:mm"}}
+              </tr>
+              <tr>
+                  {{message.sendUser.username}}: {{message.content}} : {{message.receiveUser.username}}
+              </tr>
             </th>
+            <br/>
           </table>
         </div>
         <div class="form-group form-inline" >
