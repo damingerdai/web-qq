@@ -1,0 +1,14 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-5">
+      <h2>我的好友</h2>
+      <ul class="friends">
+        <li *ngFor="let user of users">
+          <a [routerLink]="['/chatRoom',user.username]">
+            <span class="badge">{{user.username}}</span>{{user.email}}
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

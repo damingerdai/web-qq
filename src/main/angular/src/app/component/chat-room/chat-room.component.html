@@ -1,0 +1,19 @@
+<div class="container">
+   <div class="row">
+     <div class="col-md-5">
+       <h2>我的聊天对象：{{friend}}</h2>
+        <div class="form-group chat-area">
+          <table class="table" *ngFor="let message of messages">
+            <th class="messagebox">
+              <tr>{{message.sendDate | date:"yy-MM-dd:hh:mm"}}</tr>
+              <tr>{{message.content}}</tr>
+            </th>
+          </table>
+        </div>
+        <div class="form-group form-inline" >
+            <input type="text" class="form-control" style="width:399px" [(ngModel)]="currentMessage.content" (keyup.enter)="doSend(currentMessage.content)"/>
+            <button type="button" class="btn btn-primary" (click)="doSend(currentMessage.content)" >发送</button>
+        </div>
+     </div>
+   </div>
+</div>

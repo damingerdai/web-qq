@@ -1,0 +1,24 @@
+.messagebox {
+    border-radius: 5px;
+    background-color: white;
+    height: 20px;
+    margin: 5px;
+    padding: 5px;
+    border: 1px;
+    border-color: blue;
+}
+
+.chat-area {
+    height: 400px;
+    width: 500px;
+    border: 5px;
+    border-color: red;
+    overflow-y: auto;
+}
+
+.input-area {
+    border-radius: 5px;
+    width: 400px;
+    height: 30px;
+    margin: 10px;
+}
