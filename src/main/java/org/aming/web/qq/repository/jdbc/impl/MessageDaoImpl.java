@@ -1,6 +1,8 @@
 package org.aming.web.qq.repository.jdbc.impl;
 
 import org.aming.web.qq.domain.Message;
+import org.aming.web.qq.domain.Page;
+import org.aming.web.qq.domain.User;
 import org.aming.web.qq.repository.jdbc.MessageDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -35,14 +37,14 @@ public class MessageDaoImpl implements MessageDao {
     }
 
     private static final String SQL_GET_MESSAGE = "SELECT id,sendUserId,receiveUserId,content,sendDate,sendDeleteFlag,receiveDeleteFlag FROM message A  WHERE (A.sendUserId = ? AND A.receiveUserId = ?) OR (A.sendUserId = ? AND A.receiveUserId = ?) ORDER BY A.sendDate DESC LIMIT ?,?";
-    public List<Message> getMessage(String sendUserId, String receiveUserId,int startIndex,int num) {
+    public List<Message> getMessage(User sendUser, User receiveUser, Page page) {
         Object[] args = new Object[]{
-                sendUserId,
-                receiveUserId,
-                receiveUserId,
-                sendUserId,
-                startIndex,
-                num
+                sendUser.getId(),
+                receiveUser.getId(),
+                receiveUser.getId(),
+                sendUser.getId(),
+                page.getCurrentPage(),
+                page.getPageSize()
         };
         int[] argTypes = new int[]{
                 Types.VARCHAR,
@@ -57,14 +59,14 @@ public class MessageDaoImpl implements MessageDao {
                 args,
                 argTypes,
                 (rs, i) -> {
-                    Message message = new Message();
-                    message.setId(rs.getString("id"));
-                    message.setContent(rs.getString("content"));
-                    message.setSendDate(rs.getTimestamp("sendDate"));
-                    message.setSendDeleteFlag(rs.getInt("sendDeleteFlag"));
-                    message.setReceiveDeleteFlag(rs.getInt("receiveDeleteFlag"));
-                    return message;
-                    // userid暂时不拿
+                    return new Message()
+                            .setId(rs.getString("id"))
+                            .setSendUser(sendUser)
+                            .setReceiveUser(receiveUser)
+                            .setContent(rs.getString("content"))
+                            .setSendDate(rs.getTimestamp("sendDate"))
+                            .setSendDeleteFlag(rs.getInt("sendDeleteFlag"))
+                            .setReceiveDeleteFlag(rs.getInt("receiveDeleteFlag"));
                 });
     }
 

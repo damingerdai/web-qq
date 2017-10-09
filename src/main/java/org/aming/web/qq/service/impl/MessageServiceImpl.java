@@ -49,8 +49,8 @@ public class MessageServiceImpl implements MessageService{
             sendUser = securityContextService.getCurrentUser();
         }
         List<Message> result = doGetMessage(
-                userDao.loadUserByUsername(sendUser.getUsername()).getId(), //param: sendUserId
-                userDao.loadUserByUsername(receiveUser.getUsername()).getId(), //param: receiveUserId
+                userDao.loadUserByUsername(sendUser.getUsername()), //param: sendUser
+                userDao.loadUserByUsername(receiveUser.getUsername()), //param: receiveUser
                 page //param: page
         );
         return result
@@ -66,8 +66,8 @@ public class MessageServiceImpl implements MessageService{
                 );
     }
 
-    private List<Message> doGetMessage(String sendUserId,String receiveUserId,Page page){
-        return messageDao.getMessage(sendUserId,receiveUserId,page.getCurrentPage(),page.getPageSize());
+    private List<Message> doGetMessage(User sendUser,User receiveUser,Page page){
+        return messageDao.getMessage(sendUser,receiveUser,page);
     }
 
     @Autowired
