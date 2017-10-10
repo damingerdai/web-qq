@@ -66,7 +66,7 @@ public class UserDaoImpl implements UserDao{
         return getJdbcTemplate().update(SQL_SAVE_RELATIONSHIP,relationship.getUserId1(),relationship.getUserId2());
     }
 
-    private static final String SQL_EXSIT_RELATIONSHIP = " SELECT COUNT(id) FROM relationships WHERE userid1 = ? OR userid2 = ? ";
+    private static final String SQL_EXSIT_RELATIONSHIP = " SELECT COUNT(id) FROM relationships WHERE userid1 = ? AND userid2 = ? ";
     public int exsitRelationship(Relationship relationship) {
         Object[] args = new Object[] { relationship.getUserId1(),relationship.getUserId2() };
         int[] argTypes = new int[] { Types.VARCHAR,Types.VARCHAR };

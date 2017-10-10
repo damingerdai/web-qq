@@ -49,6 +49,7 @@ public class UserController {
     @RequestMapping(path = "/addRelationship",method = RequestMethod.POST)
     public CommonResponse addRelationship(@RequestBody User friend){
         try{
+            System.out.println("friend:" + friend);
             userService.addRelationship(friend);
             return CommonResponse.getSuccessCommonResponse(true);
         }catch (Exception ex){

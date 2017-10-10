@@ -110,6 +110,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private boolean doAddRelationship(Relationship relationship){
+        System.out.println("保存关系：" + relationship);
         return NumberUtils.isGreaterThanZero(userDao.saveRelationship(relationship));
     }
 
