@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
  * @author aming
  * @version 2017-10-09
  */
+@Deprecated
 @Component
 public class SecurityContextServiceImpl implements SecurityContextService{
 
