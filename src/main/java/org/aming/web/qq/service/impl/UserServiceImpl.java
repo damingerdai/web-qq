@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
 
@@ -67,11 +68,11 @@ public class UserServiceImpl implements UserService {
         return result;
     }
 
-    @Override
+
     public boolean saveRelationship(Relationship relationship) {
-        if(NumberUtils.isGreaterThanZero(userDao.exsitRelationship(relationship))){
+        if(NumberUtils.equalsZero(userDao.exsitRelationship(relationship))){
             boolean success = NumberUtils.isGreaterThanZero(userDao.saveRelationship(relationship));
-            asyncService.saveRelationShipAsync(relationship.reverse());
+            //saveRelationship(relationship.reverse());
             return success;
         } else {
             return true;
@@ -79,11 +80,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean addRelationship(User friend){
+    public void addRelationship(User friend){
         UserDetails onLineUserDetails = getCurrentUser();
         User onLineUser = userDao.loadUserByUsername(onLineUserDetails.getUsername());
-        Relationship relationship = new Relationship(onLineUser.getId(),friend.getId());
-        return NumberUtils.isGreaterThanZero(userDao.saveRelationship(relationship));
+        Relationship relationship = new Relationship().setUserId1(onLineUser.getId()).setUserId2(friend.getId());
+        if(NumberUtils.equalsZero(userDao.exsitRelationship(relationship))){
+            doAddRelationship(relationship);
+        }
+        if(NumberUtils.equalsZero(userDao.exsitRelationship(relationship.reverse()))){
+            doAddRelationship(relationship.reverse());
+        }
     }
 
     @Override
@@ -92,7 +98,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserInfo(String username) {
+    public User getUserInfo(@Nullable String username) {
         if(StringUtils.isEmpty(username)){
             username = SecurityContextUtils.getCurrentUser().getUsername();
         }
@@ -101,6 +107,10 @@ public class UserServiceImpl implements UserService {
 
     private List<User> doFindMoreUser(String condition) {
         return userDao.findMoreUser(condition);
+    }
+
+    private boolean doAddRelationship(Relationship relationship){
+        return NumberUtils.isGreaterThanZero(userDao.saveRelationship(relationship));
     }
 
 

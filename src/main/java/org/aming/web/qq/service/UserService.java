@@ -22,9 +22,7 @@ public interface UserService extends UserDetailsService {
 
     Set<User> findMoreUser(String condition);
 
-    boolean saveRelationship(Relationship relationship);
-
-    boolean addRelationship(User friend);
+    void addRelationship(User friend);
 
     boolean addUser(User user);
 
