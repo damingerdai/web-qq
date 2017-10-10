@@ -8,6 +8,7 @@ import org.aming.web.qq.repository.jdbc.UserDao;
 import org.aming.web.qq.service.MessageService;
 import org.aming.web.qq.service.SecurityContextService;
 import org.aming.web.qq.utils.NumberUtils;
+import org.aming.web.qq.utils.SecurityContextUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -29,12 +30,12 @@ public class MessageServiceImpl implements MessageService{
 
     private MessageDao messageDao;
     private UserDao userDao;
-    private SecurityContextService securityContextService;
+
 
     @Override
     public boolean saveMessage(Message message) {
         if(Objects.isNull(message.getSendUser())){
-           message.setSendUser(new User(securityContextService.getCurrentUser()));
+           message.setSendUser(new User(SecurityContextUtils.getCurrentUser()));
         }
         return doSaveMessage(message);
     }
@@ -46,7 +47,7 @@ public class MessageServiceImpl implements MessageService{
     @Override
     public List<Message> getMessage(UserDetails sendUser, UserDetails receiveUser, Page page) {
         if(Objects.isNull(sendUser)){
-            sendUser = securityContextService.getCurrentUser();
+            sendUser = SecurityContextUtils.getCurrentUser();
         }
         List<Message> result = doGetMessage(
                 userDao.loadUserByUsername(sendUser.getUsername()), //param: sendUser
@@ -78,8 +79,5 @@ public class MessageServiceImpl implements MessageService{
     public void setUserDao(UserDao userDao){
         this.userDao = userDao;
     }
-    @Autowired
-    public void setSecurityContextService(SecurityContextService securityContextService){
-        this.securityContextService = securityContextService;
-    }
+
 }
