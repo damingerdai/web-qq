@@ -104,10 +104,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    private boolean isGreaterThanZero(int i){
-        return i > 0 ? true : false;
-    }
-
     @Autowired
     public void setUserDao(UserDao userDao){
         this.userDao = userDao;
