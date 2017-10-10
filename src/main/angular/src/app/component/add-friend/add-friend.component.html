@@ -1,12 +1,17 @@
 <div class="container">
   <div class="col-md-5">
-    <div class="form-group">
-      <label for="find more friends">查找好友</label>
-      <input #friend type="text" class="form-control" (keyup)="onKey(friend.value)" placeholder="请输入用户id、用户名或用户邮件">
-      <div class="panel" *ngFor="let friend of friends">
-        <p (click)="addFriend(friend)">
-          {{friend.username}}
-        </p>
-    </div>
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <label for="find more friends">查找好友</label>
+      </div>
+      <div class="panel-body">
+          <input #friend type="text" class="form-control" (keyup)="onKey(friend.value)" placeholder="请输入用户id、用户名或用户邮件" />
+          <div *ngFor="let friend of friends">
+            <p class="well" (click)="addFriend(friend)">
+                {{friend.username}}
+            </p>
+          </div>
+      </div>
+      
   </div>
 </div>
