@@ -15,6 +15,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 /**
  * @author daming
  * @version 2017/9/30.
+ * 全局mvc配置类
  */
 @Configuration
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
