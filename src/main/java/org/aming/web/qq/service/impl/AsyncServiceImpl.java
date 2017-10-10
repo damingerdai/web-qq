@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
  * @author daming
  * @version 2017/10/5.
  */
+@Deprecated
 @Service
 public class AsyncServiceImpl implements AsyncService {
 

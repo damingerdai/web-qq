@@ -7,6 +7,7 @@ import org.aming.web.qq.domain.Relationship;
  * @author daming
  * @version 2017/10/5.
  */
+@Deprecated
 public interface AsyncService {
 
     void saveRelationShipAsync(Relationship relationship);
