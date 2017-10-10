@@ -7,6 +7,7 @@ import org.aming.web.qq.repository.jdbc.UserDao;
 import org.aming.web.qq.service.AsyncService;
 import org.aming.web.qq.service.UserService;
 import org.aming.web.qq.utils.NumberUtils;
+import org.aming.web.qq.utils.SecurityContextUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,10 +27,8 @@ import java.util.Set;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-    @Autowired
     private UserDao userDao;
 
-    @Autowired
     private AsyncService asyncService;
 
     @Override
@@ -92,11 +91,30 @@ public class UserServiceImpl implements UserService {
         return NumberUtils.isGreaterThanZero( userDao.addUser(user) );
     }
 
+    @Override
+    public User getUserInfo(String username) {
+        if(StringUtils.isEmpty(username)){
+            username = SecurityContextUtils.getCurrentUser().getUsername();
+        }
+        return userDao.loadUserByUsername(username);
+    }
+
     private List<User> doFindMoreUser(String condition) {
         return userDao.findMoreUser(condition);
     }
 
+
     private boolean isGreaterThanZero(int i){
         return i > 0 ? true : false;
+    }
+
+    @Autowired
+    public void setUserDao(UserDao userDao){
+        this.userDao = userDao;
+    }
+
+    @Autowired
+    public void setAsyncService(AsyncService asyncService){
+        this.asyncService = asyncService;
     }
 }

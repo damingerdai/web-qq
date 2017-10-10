@@ -14,8 +14,6 @@ import java.util.Set;
  */
 public interface UserService extends UserDetailsService {
 
-    //public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
-
     List<User> getFriendsByUsername(String username);
 
     UserDetails getCurrentUser();
@@ -29,4 +27,6 @@ public interface UserService extends UserDetailsService {
     boolean addRelationship(User friend);
 
     boolean addUser(User user);
+
+    User getUserInfo(String username);
 }

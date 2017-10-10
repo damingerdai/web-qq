@@ -26,4 +26,5 @@ public interface UserDao {
     int exsitRelationship(Relationship relationship);
 
     int addUser(User user);
+
 }

@@ -55,6 +55,15 @@ public class UserController {
         }
     }
 
+    @RequestMapping(path = "/myInfo", method = RequestMethod.POST)
+    public CommonResponse getUserInfo(){
+        try{
+            return CommonResponse.getSuccessCommonResponse(userService.getUserInfo(null));
+        } catch (Exception ex){
+            return CommonResponse.getErrorCommonResponse(ex);
+        }
+    }
+
     @Autowired
     public void setUserService(UserService userService){
         this.userService = userService;
