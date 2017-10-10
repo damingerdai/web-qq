@@ -17,24 +17,27 @@ public class Relationship implements Serializable {
         return id;
     }
 
-    public void setId(int id) {
+    public Relationship setId(int id) {
         this.id = id;
+        return this;
     }
 
     public String getUserId1() {
         return userId1;
     }
 
-    public void setUserId1(String userId1) {
+    public Relationship setUserId1(String userId1) {
         this.userId1 = userId1;
+        return this;
     }
 
     public String getUserId2() {
         return userId2;
     }
 
-    public void setUserId2(String userId2) {
+    public Relationship setUserId2(String userId2) {
         this.userId2 = userId2;
+        return this;
     }
 
     public Relationship(){
