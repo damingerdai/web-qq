@@ -1,4 +1,8 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { User } from '../../domain/user';
+
+const WEB_QQ_MY_INFO = '/webqq/myInfo';
 
 @Component({
   selector: 'app-user-info',
@@ -7,9 +11,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UserInfoComponent implements OnInit {
 
-  constructor() { }
+  user: User;
+
+  constructor(
+    private http: HttpClient
+  ) { }
 
   ngOnInit() {
+    this.http
+      .post(WEB_QQ_MY_INFO, null)
+      .subscribe(
+        data => {
+          this.user = data['data'];
+        }
+      );
   }
-
 }

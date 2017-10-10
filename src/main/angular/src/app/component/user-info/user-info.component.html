@@ -1,3 +1,25 @@
-<p>
-  该模块尚未开发
-</p>
+<div class="container">
+  <div class="row">
+    <div class="col-md-5">
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <h3 class="panel-title">我的信息：</h3>
+        </div>
+        <div class="panel-body">
+          <ul class="list-group">
+            <li class="list-group-item">
+              ID: {{user.id}}
+            </li>
+            <li class="list-group-item">
+              用户名: {{user.username}}
+            </li>
+            <li class="list-group-item">
+              邮箱：
+              <a href="mailto:{{user.email}}">{{user.email}}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
