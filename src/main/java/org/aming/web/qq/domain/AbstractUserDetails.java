@@ -12,7 +12,7 @@ import java.util.Collection;
  * @author daming
  * @version 2017/9/30.
  */
-public abstract class AbstractUserDetails implements UserDetails {
+abstract class AbstractUserDetails implements UserDetails {
 
     protected Collection<? extends GrantedAuthority> authorities;
     protected boolean accountNonExpired;
