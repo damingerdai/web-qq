@@ -1,7 +1,7 @@
 <div class="container">
    <div class="row">
      <div class="col-md-5">
-       <h2>我的聊天对象：{{friend}}</h2>
+       <h2 class="chat-friend">我的聊天对象：{{friend}}</h2>
         <div class="form-group chat-area">
           <table class="table"  *ngFor="let message of messages">
             <th class="messagebox" [style.float]="message.receiveUser.username == friend ? 'right' : 'left'">
@@ -9,7 +9,7 @@
                   {{message.sendDate | date:"yy-MM-dd:hh:mm"}}
               </tr>
               <tr>
-                  {{message.sendUser.username}}: {{message.content}} : {{message.receiveUser.username}}
+                  {{message.sendUser.username}}: {{message.content}}
               </tr>
             </th>
             <br/>

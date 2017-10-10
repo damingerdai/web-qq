@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, AfterContentInit } from '@angular/core';
+import { Component, OnInit, AfterContentInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Location } from '@angular/common';
 
@@ -17,11 +17,12 @@ const WEB_QQ_RECENT_MESSAGE = '/webqq/recent/message';
   templateUrl: './chat-room.component.html',
   styleUrls: ['./chat-room.component.css']
 })
-export class ChatRoomComponent implements OnInit, AfterContentInit {
+export class ChatRoomComponent implements OnInit, AfterContentInit, OnDestroy {
 
   friend: string;
   messages: Message[] = new Array<Message>();
   currentMessage: Message = new Message();
+  timer: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -45,7 +46,7 @@ export class ChatRoomComponent implements OnInit, AfterContentInit {
   }
 
   ngAfterContentInit(): void {
-    setInterval(() => {
+    this.timer = setInterval(() => {
       const body: User = new User();
       body.username = this.friend;
       this.http
@@ -57,6 +58,12 @@ export class ChatRoomComponent implements OnInit, AfterContentInit {
           }
         );
     }, 1000);
+  }
+
+  ngOnDestroy(): void {
+    if (this.timer != null ) {
+      clearInterval(this.timer);
+    }
   }
 
   doSend(value: string): void {
