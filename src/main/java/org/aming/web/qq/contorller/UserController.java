@@ -40,6 +40,7 @@ public class UserController {
         try{
             return CommonResponse.getSuccessCommonResponse(userService.addUser(user));
         }catch (Exception ex){
+            ex.printStackTrace();
             return CommonResponse.getErrorCommonResponse(ex);
         }
     }
@@ -47,7 +48,6 @@ public class UserController {
     @RequestMapping(path = "/addRelationship",method = RequestMethod.POST)
     public CommonResponse addRelationship(@RequestBody User friend){
         try{
-            System.out.println("friend:" + friend);
             userService.addRelationship(friend);
             return CommonResponse.getSuccessCommonResponse(true);
         }catch (Exception ex){

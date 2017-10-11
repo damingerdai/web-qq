@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface UserDao {
 
-    User loadUserByUsername(String username) throws UsernameNotFoundException;
+    User loadUserByUsername(String username);
 
     List<User> getFriendsByUsername(String username);
 

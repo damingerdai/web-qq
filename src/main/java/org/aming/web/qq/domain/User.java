@@ -1,5 +1,6 @@
 package org.aming.web.qq.domain;
 
+import org.aming.web.qq.utils.IdGen;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -62,6 +63,7 @@ public class User extends AbstractUserDetails implements UserDetails {
 
     public User(String username, String password) {
         super();
+        this.id = IdGen.uuid();
         this.username = username;
         this.password = password;
     }
@@ -72,6 +74,7 @@ public class User extends AbstractUserDetails implements UserDetails {
 
     public User() {
         super();
+        this.id = IdGen.uuid();
     }
 
     @Override

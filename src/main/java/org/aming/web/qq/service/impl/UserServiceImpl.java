@@ -3,6 +3,7 @@ package org.aming.web.qq.service.impl;
 import com.google.common.collect.Sets;
 import org.aming.web.qq.domain.Relationship;
 import org.aming.web.qq.domain.User;
+import org.aming.web.qq.exceptions.WebQQException;
 import org.aming.web.qq.repository.jdbc.UserDao;
 import org.aming.web.qq.service.AsyncService;
 import org.aming.web.qq.service.UserService;
@@ -13,11 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -32,9 +35,17 @@ public class UserServiceImpl implements UserService {
 
     private AsyncService asyncService;
 
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userDao.loadUserByUsername(username);
+        try{
+            return Optional
+                    .of(userDao.loadUserByUsername(username))
+                    .get();
+        } catch (Exception ex){
+            throw new UsernameNotFoundException("用户不存在");
+        }
     }
 
     @Override
@@ -68,17 +79,6 @@ public class UserServiceImpl implements UserService {
         return result;
     }
 
-
-    public boolean saveRelationship(Relationship relationship) {
-        if(NumberUtils.equalsZero(userDao.exsitRelationship(relationship))){
-            boolean success = NumberUtils.isGreaterThanZero(userDao.saveRelationship(relationship));
-            //saveRelationship(relationship.reverse());
-            return success;
-        } else {
-            return true;
-        }
-    }
-
     @Override
     public void addRelationship(User friend){
         UserDetails onLineUserDetails = getCurrentUser();
@@ -93,7 +93,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public boolean addUser(User user){
+        user.setPassword(
+                passwordEncoder.encode(user.getPassword())
+        );
+        if(userDao.loadUserByUsername(user.getUsername()) != null){
+            throw new WebQQException(5002,"用户名重复",new RuntimeException(""));
+        }
         return NumberUtils.isGreaterThanZero( userDao.addUser(user) );
     }
 
@@ -110,7 +117,6 @@ public class UserServiceImpl implements UserService {
     }
 
     private boolean doAddRelationship(Relationship relationship){
-        System.out.println("保存关系：" + relationship);
         return NumberUtils.isGreaterThanZero(userDao.saveRelationship(relationship));
     }
 
@@ -123,5 +129,10 @@ public class UserServiceImpl implements UserService {
     @Autowired
     public void setAsyncService(AsyncService asyncService){
         this.asyncService = asyncService;
+    }
+
+    @Autowired
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder){
+        this.passwordEncoder = passwordEncoder;
     }
 }

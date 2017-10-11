@@ -25,7 +25,7 @@ public class UserDaoImpl implements UserDao{
     private JdbcTemplate jdbcTemplate;
 
     private static final String SQL_GET_USER_BY_USERNAME = " SELECT id,username,`password`,email FROM User WHERE username = ? ";
-    public User loadUserByUsername(String username) throws UsernameNotFoundException {
+    public User loadUserByUsername(String username){
         List<User> list = getJdbcTemplate().query(
                 SQL_GET_USER_BY_USERNAME
                 ,new Object[]{
@@ -39,7 +39,7 @@ public class UserDaoImpl implements UserDao{
         if(list != null && list.size() > 0){
             return list.get(0);
         } else {
-            throw new UsernameNotFoundException("用户不存在");
+            return null;
         }
     }
 
