@@ -14,7 +14,7 @@ public class CommonResponse implements Serializable {
 
     private static final boolean DEFAULT_SUCCESS_FLAG = true;
 
-    private boolean succcess;
+    private boolean success;
     private Object data;
     private WebQQException error;
 
@@ -39,12 +39,12 @@ public class CommonResponse implements Serializable {
         return new CommonResponse(false,error);
     }
 
-    public boolean isSucccess() {
-        return succcess;
+    public boolean isSuccess() {
+        return success;
     }
 
-    public void setSucccess(boolean succcess) {
-        this.succcess = succcess;
+    public void setSuccess(boolean succcess) {
+        this.success = succcess;
     }
 
     public Object getData() {
@@ -65,18 +65,18 @@ public class CommonResponse implements Serializable {
 
     public CommonResponse() {
         super();
-        this.succcess = DEFAULT_SUCCESS_FLAG;
+        this.success = DEFAULT_SUCCESS_FLAG;
     }
 
     public CommonResponse(boolean succcess, Object data) {
         super();
-        this.succcess = succcess;
+        this.success = succcess;
         this.data = data;
     }
 
     public CommonResponse(boolean succcess,WebQQException error){
         super();
-        this.succcess = succcess;
+        this.success = succcess;
         this.error = error;
     }
 }
