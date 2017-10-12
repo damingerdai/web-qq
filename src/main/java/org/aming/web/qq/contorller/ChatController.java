@@ -1,6 +1,8 @@
 package org.aming.web.qq.contorller;
 
 import org.aming.web.qq.domain.Message;
+import org.aming.web.qq.logger.Logger;
+import org.aming.web.qq.logger.LoggerManager;
 import org.aming.web.qq.response.CommonResponse;
 import org.aming.web.qq.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/webqq")
 public class ChatController {
 
+    private static final Logger logger = LoggerManager.getLogger(ChatController.class);
+
     private MessageService messageService;
 
     @RequestMapping(path = "/chat", method = RequestMethod.POST)
@@ -24,7 +28,7 @@ public class ChatController {
         try{
             return CommonResponse.getSuccessCommonResponse(messageService.saveMessage(message));
         } catch (Exception ex){
-            ex.printStackTrace();
+            logger.error("异常信息 : {} - 异常原因 : {} ", ex.getMessage(), ex.getCause());
             throw CommonResponse.getErrorCommonResponse(ex);
         }
     }

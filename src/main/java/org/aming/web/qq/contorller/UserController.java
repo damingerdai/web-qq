@@ -26,7 +26,7 @@ public class UserController {
         try{
             return CommonResponse.getSuccessCommonResponse(userService.getFriendsForCurrentUser());
         } catch (Exception ex){
-            logger.error("异常信息：{}", ex.getLocalizedMessage());
+            logger.error("异常信息 : {} - 异常原因 : {} ", ex.getMessage(), ex.getCause());
             throw CommonResponse.getErrorCommonResponse(ex);
         }
     }
@@ -36,6 +36,7 @@ public class UserController {
         try{
             return CommonResponse.getSuccessCommonResponse(userService.findMoreUser(condition));
         }catch (Exception ex){
+            logger.error("异常信息 : {} - 异常原因 : {} ", ex.getMessage(), ex.getCause());
             throw CommonResponse.getErrorCommonResponse(ex);
         }
     }
@@ -46,7 +47,7 @@ public class UserController {
         try{
             return CommonResponse.getSuccessCommonResponse(userService.addUser(user));
         }catch (Exception ex){
-            ex.printStackTrace();
+            logger.error("异常信息 : {} - 异常原因 : {} ", ex.getMessage(), ex.getCause());
             throw CommonResponse.getErrorCommonResponse(ex);
         }
     }
@@ -57,6 +58,7 @@ public class UserController {
             userService.addRelationship(friend);
             return CommonResponse.getSuccessCommonResponse(true);
         }catch (Exception ex){
+            logger.error("异常信息 : {} - 异常原因 : {} ", ex.getMessage(), ex.getCause());
             throw CommonResponse.getErrorCommonResponse(ex);
         }
     }
@@ -66,6 +68,7 @@ public class UserController {
         try{
             return CommonResponse.getSuccessCommonResponse(userService.getUserInfo(null));
         } catch (Exception ex){
+            logger.error("异常信息 : {} - 异常原因 : {} ", ex.getMessage(), ex.getCause());
             throw CommonResponse.getErrorCommonResponse(ex);
         }
     }

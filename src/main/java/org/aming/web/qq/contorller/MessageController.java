@@ -3,6 +3,8 @@ package org.aming.web.qq.contorller;
 import org.aming.web.qq.domain.Page;
 import org.aming.web.qq.domain.TimeInterval;
 import org.aming.web.qq.domain.User;
+import org.aming.web.qq.logger.Logger;
+import org.aming.web.qq.logger.LoggerManager;
 import org.aming.web.qq.response.CommonResponse;
 import org.aming.web.qq.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,8 @@ import java.sql.Timestamp;
 @RequestMapping("/webqq")
 public class MessageController {
 
+    private static final Logger logger = LoggerManager.getLogger(MessageController.class);
+
     private MessageService messageService;
 
     @RequestMapping( path = "/recent/message/{friend}", method = RequestMethod.GET)
@@ -31,6 +35,7 @@ public class MessageController {
                     )
             );
         }catch (Exception ex){
+            logger.error("异常信息 : {} - 异常原因 : {} ", ex.getMessage(), ex.getCause());
             throw CommonResponse.getErrorCommonResponse(ex);
         }
     }
@@ -49,6 +54,7 @@ public class MessageController {
                     )
             );
         }catch (Exception ex){
+            logger.error("异常信息 : {} - 异常原因 : {} ", ex.getMessage(), ex.getCause());
             throw CommonResponse.getErrorCommonResponse(ex);
         }
     }
