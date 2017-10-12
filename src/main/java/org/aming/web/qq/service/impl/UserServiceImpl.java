@@ -1,6 +1,5 @@
 package org.aming.web.qq.service.impl;
 
-import com.google.common.collect.Sets;
 import org.aming.web.qq.domain.Relationship;
 import org.aming.web.qq.domain.User;
 import org.aming.web.qq.exceptions.WebQQDaoException;
@@ -11,7 +10,6 @@ import org.aming.web.qq.utils.NumberUtils;
 import org.aming.web.qq.utils.SecurityContextUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -60,9 +58,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetails getCurrentUser() throws WebQQServiceException {
         try{
-            return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        } catch (WebQQDaoException ex) {
-            throw new WebQQServiceException("获取当前登录用户失败",ex);
+            return SecurityContextUtils.getCurrentUser();
+        } catch (Exception ex) {
+            throw new WebQQServiceException("获取当前登录用户失败");
         }
 
     }
@@ -119,29 +117,38 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = false)
-    public boolean addUser(User user){
+    public boolean addUser(User user) throws WebQQServiceException{
         user.setPassword(
                 passwordEncoder.encode(user.getPassword())
         );
         if(userDao.loadUserByUsername(user.getUsername()) != null){
-            throw new RuntimeException("用户名重复");
+            throw new WebQQServiceException("用户名重复");
         }
-        return NumberUtils.isGreaterThanZero( userDao.addUser(user) );
+        try {
+            return NumberUtils.isGreaterThanZero(userDao.addUser(user));
+        } catch (WebQQDaoException ex){
+            throw new WebQQServiceException("添加用户失败",ex);
+        }
     }
 
     @Override
-    public User getUserInfo(@Nullable String username) {
+    public User getUserInfo(@Nullable String username) throws WebQQServiceException {
         if(StringUtils.isEmpty(username)){
-            username = SecurityContextUtils.getCurrentUser().getUsername();
+            username = getCurrentUser().getUsername();
         }
-        return userDao.loadUserByUsername(username);
+        try{
+            return userDao.loadUserByUsername(username);
+        }catch (WebQQDaoException ex) {
+            throw new WebQQServiceException("获取个人信息失败",ex);
+        }
+
     }
 
-    private List<User> doFindMoreUser(String condition) {
+    private List<User> doFindMoreUser(String condition) throws WebQQDaoException {
         return userDao.findMoreUser(condition);
     }
 
-    private boolean doAddRelationship(Relationship relationship){
+    private boolean doAddRelationship(Relationship relationship) throws WebQQDaoException {
         return NumberUtils.isGreaterThanZero(userDao.saveRelationship(relationship));
     }
 
