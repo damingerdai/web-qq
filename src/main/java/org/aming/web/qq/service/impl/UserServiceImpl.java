@@ -5,7 +5,6 @@ import org.aming.web.qq.domain.Relationship;
 import org.aming.web.qq.domain.User;
 import org.aming.web.qq.exceptions.WebQQException;
 import org.aming.web.qq.repository.jdbc.UserDao;
-import org.aming.web.qq.service.AsyncService;
 import org.aming.web.qq.service.UserService;
 import org.aming.web.qq.utils.NumberUtils;
 import org.aming.web.qq.utils.SecurityContextUtils;
@@ -32,9 +31,6 @@ import java.util.Set;
 public class UserServiceImpl implements UserService {
 
     private UserDao userDao;
-
-    private AsyncService asyncService;
-
     private PasswordEncoder passwordEncoder;
 
     @Override
@@ -126,10 +122,6 @@ public class UserServiceImpl implements UserService {
         this.userDao = userDao;
     }
 
-    @Autowired
-    public void setAsyncService(AsyncService asyncService){
-        this.asyncService = asyncService;
-    }
 
     @Autowired
     public void setPasswordEncoder(PasswordEncoder passwordEncoder){
