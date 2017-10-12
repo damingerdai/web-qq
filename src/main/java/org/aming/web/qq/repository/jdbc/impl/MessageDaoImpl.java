@@ -5,6 +5,7 @@ import org.aming.web.qq.domain.Message;
 import org.aming.web.qq.domain.Page;
 import org.aming.web.qq.domain.TimeInterval;
 import org.aming.web.qq.domain.User;
+import org.aming.web.qq.exceptions.WebQQDaoException;
 import org.aming.web.qq.repository.jdbc.MessageDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -28,82 +29,110 @@ public class MessageDaoImpl implements MessageDao {
     private JdbcTemplate jdbcTemplate;
 
     private static final String SQL_SAVE_MESSAGE = " INSERT INTO message (id,sendUserId,receiveUserId,content,sendDate,sendDeleteFlag,receiveDeleteFlag,create_id,creation_date,update_id,update_date) SELECT ?,A.id,B.id,?,?,?,?,'system',NOW(),'system',NOW() FROM `user` A  JOIN USER B ON  B.username = ? WHERE A.username = ? ";
-    public int saveMessage(Message message) {
-        Object[]  args = new Object[]{
-                message.getId(),
-                message.getContent(),
-                new java.sql.Timestamp(message.getSendDate() != null ? message.getSendDate().getTime() : System.currentTimeMillis()),
-                message.getSendDeleteFlag(),
-                message.getReceiveDeleteFlag(),
-                message.getReceiveUser().getUsername(),
-                message.getSendUser().getUsername()
-        };
-        return jdbcTemplate.update(SQL_SAVE_MESSAGE,args);
+    public int saveMessage(Message message) throws WebQQDaoException {
+        try{
+            Object[]  args = new Object[] {
+                    message.getId(),
+                    message.getContent(),
+                    new java.sql.Timestamp(
+                            message.getSendDate() != null ? message.getSendDate().getTime() : System.currentTimeMillis()),
+                    message.getSendDeleteFlag(),
+                    message.getReceiveDeleteFlag(),
+                    message.getReceiveUser().getUsername(),
+                    message.getSendUser().getUsername()
+            };
+            int[]  argTypes = new int[] {
+                    Types.VARBINARY,
+                    Types.VARBINARY,
+                    Types.TIMESTAMP,
+                    Types.INTEGER,
+                    Types.INTEGER,
+                    Types.VARBINARY,
+                    Types.VARBINARY
+            };
+            return jdbcTemplate.update(
+                    SQL_SAVE_MESSAGE,
+                    args,
+                    argTypes
+            );
+        } catch (Exception ex) {
+            throw new WebQQDaoException(SQL_SAVE_MESSAGE,ex);
+        }
+
     }
 
     private static final String SQL_GET_MESSAGE_PAGE = "SELECT id,sendUserId,receiveUserId,content,sendDate,sendDeleteFlag,receiveDeleteFlag FROM message A  WHERE (A.sendUserId = ? AND A.receiveUserId = ?) OR (A.sendUserId = ? AND A.receiveUserId = ?) ORDER BY A.sendDate DESC LIMIT ?,?";
-    public List<Message> getMessage(User sendUser, User receiveUser, Page page) {
-        Map<String,User> map = Maps.newHashMap();
-        map.put(sendUser.getId(),sendUser);
-        map.put(receiveUser.getId(),receiveUser);
-        Object[] args = new Object[]{
-                sendUser.getId(),
-                receiveUser.getId(),
-                receiveUser.getId(),
-                sendUser.getId(),
-                page.getCurrentPage(),
-                page.getPageSize()
-        };
-        int[] argTypes = new int[]{
-                Types.VARCHAR,
-                Types.VARCHAR,
-                Types.VARCHAR,
-                Types.VARCHAR,
-                Types.INTEGER,
-                Types.INTEGER
-        };
-        return jdbcTemplate.query(
-                SQL_GET_MESSAGE_PAGE,
-                args,
-                argTypes,
-                (rs, i) -> getMessageByResultSet(rs)
-                        .setSendUser(map.get(rs.getString("sendUserId")))
-                        .setReceiveUser(map.get(rs.getString("receiveUserId")))
-        );
+    public List<Message> getMessage(User sendUser, User receiveUser, Page page) throws WebQQDaoException {
+        try {
+            Map<String,User> map = Maps.newHashMap();
+            map.put(sendUser.getId(),sendUser);
+            map.put(receiveUser.getId(),receiveUser);
+
+            Object[] args = new Object[]{
+                    sendUser.getId(),
+                    receiveUser.getId(),
+                    receiveUser.getId(),
+                    sendUser.getId(),
+                    page.getCurrentPage(),
+                    page.getPageSize()
+            };
+            int[] argTypes = new int[]{
+                    Types.VARCHAR,
+                    Types.VARCHAR,
+                    Types.VARCHAR,
+                    Types.VARCHAR,
+                    Types.INTEGER,
+                    Types.INTEGER
+            };
+            return jdbcTemplate.query(
+                    SQL_GET_MESSAGE_PAGE,
+                    args,
+                    argTypes,
+                    (rs, i) -> getMessageByResultSet(rs)
+                            .setSendUser(map.get(rs.getString("sendUserId")))
+                            .setReceiveUser(map.get(rs.getString("receiveUserId")))
+            );
+        } catch (Exception ex) {
+            throw new WebQQDaoException(SQL_GET_MESSAGE_PAGE,ex);
+        }
+
     }
 
     private static final String SQL_GET_MESSAGE_TIME_INTERVAL = " SELECT id,sendUserId,receiveUserId,content,sendDate,sendDeleteFlag,receiveDeleteFlag FROM message A  WHERE (A.sendUserId = ? AND A.receiveUserId = ?) OR (A.sendUserId = ? AND A.receiveUserId = ?) AND A.sendDate BETWEEN ? AND ? ORDER BY A.sendDate DESC  ";
-    public List<Message> getMessage(User sendUser, User receiveUser, TimeInterval timeInterval) {
-        Map<String,User> map = Maps.newHashMap();
-        map.put(sendUser.getId(),sendUser);
-        map.put(receiveUser.getId(),receiveUser);
-        Object[] args = new Object[]{
-                sendUser.getId(),
-                receiveUser.getId(),
-                receiveUser.getId(),
-                sendUser.getId(),
-                timeInterval.getBeginDateTime(),
-                timeInterval.getEndDateTime()
-        };
-        for(Object obj : args){
-            System.out.println(obj);
+    public List<Message> getMessage(User sendUser, User receiveUser, TimeInterval timeInterval) throws WebQQDaoException {
+        try{
+            Map<String,User> map = Maps.newHashMap();
+            map.put(sendUser.getId(),sendUser);
+            map.put(receiveUser.getId(),receiveUser);
+
+            Object[] args = new Object[]{
+                    sendUser.getId(),
+                    receiveUser.getId(),
+                    receiveUser.getId(),
+                    sendUser.getId(),
+                    timeInterval.getBeginDateTime(),
+                    timeInterval.getEndDateTime()
+            };
+            int[] argTypes = new int[]{
+                    Types.VARCHAR,
+                    Types.VARCHAR,
+                    Types.VARCHAR,
+                    Types.VARCHAR,
+                    Types.TIMESTAMP,
+                    Types.TIMESTAMP
+            };
+            return jdbcTemplate.query(
+                    SQL_GET_MESSAGE_TIME_INTERVAL,
+                    args,
+                    argTypes,
+                    (rs, i) -> getMessageByResultSet(rs)
+                            .setSendUser(map.get(rs.getString("sendUserId")))
+                            .setReceiveUser(map.get(rs.getString("receiveUserId")))
+            );
+        } catch (Exception ex) {
+            throw new WebQQDaoException(SQL_GET_MESSAGE_TIME_INTERVAL,ex);
         }
-        int[] argTypes = new int[]{
-                Types.VARCHAR,
-                Types.VARCHAR,
-                Types.VARCHAR,
-                Types.VARCHAR,
-                Types.TIMESTAMP,
-                Types.TIMESTAMP
-        };
-        return jdbcTemplate.query(
-                SQL_GET_MESSAGE_TIME_INTERVAL,
-                args,
-                argTypes,
-                (rs, i) -> getMessageByResultSet(rs)
-                        .setSendUser(map.get(rs.getString("sendUserId")))
-                        .setReceiveUser(map.get(rs.getString("receiveUserId")))
-        );
+
     }
 
     private Message getMessageByResultSet(ResultSet rs) throws SQLException{
