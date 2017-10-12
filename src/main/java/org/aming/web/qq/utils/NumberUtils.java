@@ -1,5 +1,7 @@
 package org.aming.web.qq.utils;
 
+import java.util.function.Predicate;
+
 /**
  * @author daming
  * @version 2017/10/5.
@@ -12,7 +14,7 @@ public class NumberUtils {
      * @return
      */
     public static boolean isGreaterThanZero(int i){
-        return i > 0 ? true : false;
+        return internalOperating(i,( s ) -> s > 0);
     }
 
     /**
@@ -21,7 +23,7 @@ public class NumberUtils {
      * @return
      */
     public static boolean equalsZero(int i) {
-        return i == 0;
+        return internalOperating(i,(s) -> s == 0);
     }
 
     /**
@@ -30,8 +32,16 @@ public class NumberUtils {
      * @return
      */
     public static boolean isLessThanZero(int i) {
-        return i > 0 ? true : false;
+        return internalOperating(i,(s) -> s < 0);
     }
 
-
+    /**
+     * 内部用于操作
+     * @param i
+     * @param predicate
+     * @return
+     */
+    private static boolean internalOperating(int i,Predicate<Integer> predicate) {
+        return predicate.test(i);
+    }
 }
