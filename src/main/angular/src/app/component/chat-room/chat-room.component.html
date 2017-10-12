@@ -13,19 +13,6 @@
               </p>
             </div>
           </div>
-          <!--
-          <table>
-            <th class="messagebox" [style.float]="message.receiveUser.username == friend ? 'right' : 'left'">
-              <tr>
-                  {{message.sendDate | date:"yy-MM-dd:hh:mm"}}
-              </tr>
-              <tr>
-                  {{message.sendUser.username}}: {{message.content}}
-              </tr>
-            </th>
-            <br/>
-          </table>
-        -->
         </div>
         <div class="form-group form-inline" >
             <input type="text" class="form-control" style="width:399px" [(ngModel)]="currentMessage.content" (keyup.enter)="doSend(currentMessage.content)"/>
