@@ -11,17 +11,16 @@ public class WebQQException extends RuntimeException {
     private static final int DEFAULT_CODE = 5000;
     private static final String DEFAULT_MESSAGE = "系统内部错误";
 
-
     private int code;
     private String message;
-    private Throwable cause;
 
     public int getCode() {
         return code;
     }
 
-    public void setCode(int code) {
+    public WebQQException setCode(int code) {
         this.code = code;
+        return this;
     }
 
     @Override
@@ -29,18 +28,11 @@ public class WebQQException extends RuntimeException {
         return message;
     }
 
-    public void setMessage(String message) {
+    public WebQQException setMessage(String message) {
         this.message = message;
+        return this;
     }
 
-    @Override
-    public Throwable getCause() {
-        return cause;
-    }
-
-    public void setCause(Throwable cause) {
-        this.cause = cause;
-    }
 
     public WebQQException(){
         super();
@@ -51,15 +43,13 @@ public class WebQQException extends RuntimeException {
     public WebQQException(Throwable cause){
         super();
         this.code = DEFAULT_CODE;
-        this.message = DEFAULT_MESSAGE;
-        this.cause = cause;
+        this.message = cause.getMessage();
     }
 
-    public WebQQException(int code, String message, Throwable cause) {
+    public WebQQException(int code, String message) {
         super();
         this.code = code;
         this.message = message;
-        this.cause = cause;
     }
 
 }

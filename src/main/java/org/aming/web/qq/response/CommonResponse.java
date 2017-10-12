@@ -27,7 +27,7 @@ public class CommonResponse implements Serializable {
         return new CommonResponse(true,data);
     }
 
-    public static WebQQException getErrorCommonResponse(Throwable error){
+    public static WebQQException getErrorCommonResponse(Throwable error) {
         if(error instanceof WebQQException){
             return (WebQQException)error;
         } else {
@@ -35,17 +35,16 @@ public class CommonResponse implements Serializable {
         }
     }
 
-    public static CommonResponse getErrorCommonResponse(int code, String message, Throwable cause){
-        WebQQException error = new WebQQException(code,message,cause);
-        return new CommonResponse(false,error);
+    public static WebQQException getErrorCommonResponse(int code, String message) {
+         return new WebQQException(code,message);
     }
 
     public boolean isSuccess() {
         return success;
     }
 
-    public void setSuccess(boolean succcess) {
-        this.success = succcess;
+    public void setSuccess(boolean success) {
+        this.success = success;
     }
 
     public Object getData() {
