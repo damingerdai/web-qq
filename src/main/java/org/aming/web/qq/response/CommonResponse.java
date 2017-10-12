@@ -18,19 +18,20 @@ public class CommonResponse implements Serializable {
     private Object data;
     private WebQQException error;
 
+    @Deprecated
     public static CommonResponse getCommonResponse(boolean succcess,Object data){
         return new CommonResponse(succcess,data);
     }
 
     public static CommonResponse getSuccessCommonResponse(Object data){
-        return getCommonResponse(true,data);
+        return new CommonResponse(true,data);
     }
 
-    public static CommonResponse getErrorCommonResponse(Throwable error){
+    public static WebQQException getErrorCommonResponse(Throwable error){
         if(error instanceof WebQQException){
-            return new CommonResponse(false,(WebQQException)error);
+            return (WebQQException)error;
         } else {
-            return new CommonResponse(false,new WebQQException(new Throwable(error.getMessage())));
+            return new WebQQException(new Throwable(error.getMessage()));
         }
     }
 

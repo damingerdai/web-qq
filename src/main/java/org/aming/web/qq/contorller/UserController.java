@@ -1,6 +1,8 @@
 package org.aming.web.qq.contorller;
 
 import org.aming.web.qq.domain.User;
+import org.aming.web.qq.logger.Logger;
+import org.aming.web.qq.logger.LoggerManager;
 import org.aming.web.qq.response.CommonResponse;
 import org.aming.web.qq.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/webqq")
 public class UserController {
+
+    private static final Logger logger = LoggerManager.getLogger(UserController.class);
+
     private UserService userService;
 
     @RequestMapping(path = "/myFriends", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
@@ -21,7 +26,8 @@ public class UserController {
         try{
             return CommonResponse.getSuccessCommonResponse(userService.getFriendsForCurrentUser());
         } catch (Exception ex){
-            return CommonResponse.getErrorCommonResponse(ex);
+            logger.error("异常信息：{}", ex.getLocalizedMessage());
+            throw CommonResponse.getErrorCommonResponse(ex);
         }
     }
 
@@ -30,7 +36,7 @@ public class UserController {
         try{
             return CommonResponse.getSuccessCommonResponse(userService.findMoreUser(condition));
         }catch (Exception ex){
-            return CommonResponse.getErrorCommonResponse(ex);
+            throw CommonResponse.getErrorCommonResponse(ex);
         }
     }
 
@@ -41,7 +47,7 @@ public class UserController {
             return CommonResponse.getSuccessCommonResponse(userService.addUser(user));
         }catch (Exception ex){
             ex.printStackTrace();
-            return CommonResponse.getErrorCommonResponse(ex);
+            throw CommonResponse.getErrorCommonResponse(ex);
         }
     }
 
@@ -51,7 +57,7 @@ public class UserController {
             userService.addRelationship(friend);
             return CommonResponse.getSuccessCommonResponse(true);
         }catch (Exception ex){
-            return CommonResponse.getErrorCommonResponse(ex);
+            throw CommonResponse.getErrorCommonResponse(ex);
         }
     }
 
@@ -60,7 +66,7 @@ public class UserController {
         try{
             return CommonResponse.getSuccessCommonResponse(userService.getUserInfo(null));
         } catch (Exception ex){
-            return CommonResponse.getErrorCommonResponse(ex);
+            throw CommonResponse.getErrorCommonResponse(ex);
         }
     }
 

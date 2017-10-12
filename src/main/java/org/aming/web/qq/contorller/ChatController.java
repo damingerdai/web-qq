@@ -25,7 +25,7 @@ public class ChatController {
             return CommonResponse.getSuccessCommonResponse(messageService.saveMessage(message));
         } catch (Exception ex){
             ex.printStackTrace();
-            return CommonResponse.getErrorCommonResponse(ex);
+            throw CommonResponse.getErrorCommonResponse(ex);
         }
     }
 

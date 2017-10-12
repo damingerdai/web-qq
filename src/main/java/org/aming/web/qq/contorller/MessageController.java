@@ -31,7 +31,7 @@ public class MessageController {
                     )
             );
         }catch (Exception ex){
-            return CommonResponse.getErrorCommonResponse(ex);
+            throw CommonResponse.getErrorCommonResponse(ex);
         }
     }
 
@@ -49,7 +49,7 @@ public class MessageController {
                     )
             );
         }catch (Exception ex){
-            return CommonResponse.getErrorCommonResponse(ex);
+            throw CommonResponse.getErrorCommonResponse(ex);
         }
     }
 
