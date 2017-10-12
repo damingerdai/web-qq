@@ -7,7 +7,6 @@ import org.aming.web.qq.domain.User;
 import org.aming.web.qq.repository.jdbc.MessageDao;
 import org.aming.web.qq.repository.jdbc.UserDao;
 import org.aming.web.qq.service.MessageService;
-import org.aming.web.qq.service.SecurityContextService;
 import org.aming.web.qq.utils.NumberUtils;
 import org.aming.web.qq.utils.SecurityContextUtils;
 import org.springframework.beans.factory.annotation.Autowired;
