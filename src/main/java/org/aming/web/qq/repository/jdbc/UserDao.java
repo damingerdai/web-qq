@@ -2,6 +2,7 @@ package org.aming.web.qq.repository.jdbc;
 
 import org.aming.web.qq.domain.Relationship;
 import org.aming.web.qq.domain.User;
+import org.aming.web.qq.exceptions.WebQQDaoException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -13,18 +14,16 @@ import java.util.List;
  */
 public interface UserDao {
 
-    User loadUserByUsername(String username);
+    User loadUserByUsername(String username) throws WebQQDaoException;
 
-    List<User> getFriendsByUsername(String username);
+    List<User> getFriendsByUsername(String username) throws WebQQDaoException;
 
-    JdbcTemplate getJdbcTemplate();
+    List<User> findMoreUser(String condition) throws WebQQDaoException;
 
-    List<User> findMoreUser(String condition);
+    int saveRelationship(Relationship relationship) throws WebQQDaoException;
 
-    int saveRelationship(Relationship relationship);
+    int exsitRelationship(Relationship relationship) throws WebQQDaoException;
 
-    int exsitRelationship(Relationship relationship);
-
-    int addUser(User user);
+    int addUser(User user) throws WebQQDaoException;
 
 }
