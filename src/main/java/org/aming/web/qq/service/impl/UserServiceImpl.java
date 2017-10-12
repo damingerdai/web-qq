@@ -3,7 +3,8 @@ package org.aming.web.qq.service.impl;
 import com.google.common.collect.Sets;
 import org.aming.web.qq.domain.Relationship;
 import org.aming.web.qq.domain.User;
-import org.aming.web.qq.exceptions.WebQQException;
+import org.aming.web.qq.exceptions.WebQQDaoException;
+import org.aming.web.qq.exceptions.WebQQServiceException;
 import org.aming.web.qq.repository.jdbc.UserDao;
 import org.aming.web.qq.service.UserService;
 import org.aming.web.qq.utils.NumberUtils;
@@ -17,10 +18,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
+import static java.util.stream.Collectors.toSet;
 
 /**
  * @author daming
@@ -39,53 +43,78 @@ public class UserServiceImpl implements UserService {
             return Optional
                     .of(userDao.loadUserByUsername(username))
                     .get();
-        } catch (Exception ex){
+        } catch (WebQQDaoException ex){
             throw new UsernameNotFoundException("用户不存在");
         }
     }
 
     @Override
-    public List<User> getFriendsByUsername(String username) {
-        return userDao.getFriendsByUsername(username);
+    public List<User> getFriendsByUsername(String username) throws WebQQServiceException {
+        try{
+            return userDao.getFriendsByUsername(username);
+        } catch (WebQQDaoException ex) {
+            throw new WebQQServiceException("获取好友失败",ex);
+        }
     }
 
     @Override
-    public UserDetails getCurrentUser(){
-        return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public UserDetails getCurrentUser() throws WebQQServiceException {
+        try{
+            return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        } catch (WebQQDaoException ex) {
+            throw new WebQQServiceException("获取当前登录用户失败",ex);
+        }
+
     }
 
     @Override
-    public List<User> getFriendsForCurrentUser(){
-        return getFriendsByUsername(getCurrentUser().getUsername());
+    public List<User> getFriendsForCurrentUser() throws WebQQServiceException {
+        try{
+            return getFriendsByUsername(getCurrentUser().getUsername());
+        } catch (WebQQDaoException ex) {
+            throw new WebQQServiceException("获取当前登录用户的好友失败",ex);
+        } catch (WebQQServiceException ex) {
+            throw ex;
+        }
+
     }
 
     @Override
-    public Set<User> findMoreUser(String condition){
-        Set<User> result = Sets.newHashSet();
-        if(StringUtils.isNotBlank(condition)){
-            condition = "%" + condition + "%";
-            List<User> users = doFindMoreUser(condition);
+    public Set<User> findMoreUser(@Nonnull String condition) throws WebQQServiceException {
+        try{
             UserDetails onlineUser = getCurrentUser();
-            for(User user : users){
-                if(!user.getUsername().equals(onlineUser.getUsername())){
-                    result.add(user);
-                }
-            }
+            return doFindMoreUser( "%" + condition + "%").stream()
+                    .filter(user -> !user.getUsername().equals(onlineUser))
+                    .collect(toSet());
+        } catch (WebQQDaoException ex) {
+            throw new WebQQServiceException("发现好友失败",ex);
+        } catch (WebQQServiceException ex) {
+            throw ex;
         }
-        return result;
+
     }
 
     @Override
-    public void addRelationship(User friend){
-        UserDetails onLineUserDetails = getCurrentUser();
-        User onLineUser = userDao.loadUserByUsername(onLineUserDetails.getUsername());
-        Relationship relationship = new Relationship().setUserId1(onLineUser.getId()).setUserId2(friend.getId());
-        if(NumberUtils.equalsZero(userDao.exsitRelationship(relationship))){
-            doAddRelationship(relationship);
+    public void addRelationship(User friend) throws WebQQServiceException {
+        try{
+            User onLineUser = userDao.loadUserByUsername(getCurrentUser().getUsername());
+
+            Relationship relationship = new Relationship()
+                    .setUserId1(onLineUser.getId())
+                    .setUserId2(friend.getId());
+
+            if(NumberUtils.equalsZero(userDao.exsitRelationship(relationship))){
+                doAddRelationship(relationship);
+            }
+            if(NumberUtils.equalsZero(userDao.exsitRelationship(relationship.reverse()))){
+                doAddRelationship(relationship.reverse());
+            }
+        } catch (WebQQDaoException ex) {
+            throw new WebQQServiceException("添加好友失败",ex);
+        } catch (WebQQServiceException ex) {
+            throw ex;
         }
-        if(NumberUtils.equalsZero(userDao.exsitRelationship(relationship.reverse()))){
-            doAddRelationship(relationship.reverse());
-        }
+
     }
 
     @Override
@@ -95,7 +124,7 @@ public class UserServiceImpl implements UserService {
                 passwordEncoder.encode(user.getPassword())
         );
         if(userDao.loadUserByUsername(user.getUsername()) != null){
-            throw new WebQQException(5002,"用户名重复",new RuntimeException(""));
+            throw new RuntimeException("用户名重复");
         }
         return NumberUtils.isGreaterThanZero( userDao.addUser(user) );
     }
