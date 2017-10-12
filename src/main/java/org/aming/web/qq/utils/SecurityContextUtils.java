@@ -24,7 +24,7 @@ public class SecurityContextUtils {
                             (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()
                     ).get();
         } catch (NullPointerException ex){
-            throw new WebQQException(5001,"没有发现当前用户",ex);
+            throw new WebQQException(5001,"没有发现当前用户");
         } catch (Exception ex){
             throw new WebQQException();
         }
