@@ -2,8 +2,19 @@
    <div class="row">
      <div class="col-md-5">
        <h2 class="chat-friend">我的聊天对象：{{friend}}</h2>
-        <div class="form-group chat-area">
-          <table class="table"  *ngFor="let message of messages">
+        <div class="form-group row chat-area">
+          <div  class="col-md-12"  *ngFor="let message of messages">
+            <div class="messagebox" [style.float]="message.receiveUser.username == friend ? 'right' : 'left'">
+              <p>
+                  {{message.sendDate | date:"yyyy-MM-dd:hh:mm"}}
+              </p>
+              <p>
+                  {{message.sendUser.username}}: {{message.content}}
+              </p>
+            </div>
+          </div>
+          <!--
+          <table>
             <th class="messagebox" [style.float]="message.receiveUser.username == friend ? 'right' : 'left'">
               <tr>
                   {{message.sendDate | date:"yy-MM-dd:hh:mm"}}
@@ -14,6 +25,7 @@
             </th>
             <br/>
           </table>
+        -->
         </div>
         <div class="form-group form-inline" >
             <input type="text" class="form-control" style="width:399px" [(ngModel)]="currentMessage.content" (keyup.enter)="doSend(currentMessage.content)"/>

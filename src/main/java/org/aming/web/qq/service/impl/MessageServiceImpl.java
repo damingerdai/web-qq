@@ -2,6 +2,7 @@ package org.aming.web.qq.service.impl;
 
 import org.aming.web.qq.domain.Message;
 import org.aming.web.qq.domain.Page;
+import org.aming.web.qq.domain.TimeInterval;
 import org.aming.web.qq.domain.User;
 import org.aming.web.qq.repository.jdbc.MessageDao;
 import org.aming.web.qq.repository.jdbc.UserDao;
@@ -14,6 +15,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -45,7 +48,7 @@ public class MessageServiceImpl implements MessageService{
     }
 
     @Override
-    public List<Message> getMessage(UserDetails sendUser, UserDetails receiveUser, Page page) {
+    public List<Message> getMessage(@Nullable UserDetails sendUser, @Nonnull UserDetails receiveUser, Page page) {
         if(Objects.isNull(sendUser)){
             sendUser = SecurityContextUtils.getCurrentUser();
         }
@@ -67,8 +70,35 @@ public class MessageServiceImpl implements MessageService{
                 );
     }
 
+    @Override
+    public List<Message> getMessage(@Nullable UserDetails sendUser,@Nonnull UserDetails receiveUser, TimeInterval timeInterval) {
+        if(Objects.isNull(sendUser)){
+            sendUser = SecurityContextUtils.getCurrentUser();
+        }
+        List<Message> result = doGetMessage(
+                userDao.loadUserByUsername(sendUser.getUsername()), //param: sendUser
+                userDao.loadUserByUsername(receiveUser.getUsername()), //param: receiveUser
+                timeInterval //param: timeInterval
+        );
+        return result
+                .stream()
+                .sorted(
+                        Comparator
+                                .comparing(
+                                        Message ::getSendDate
+                                ))
+                .collect(
+                        Collectors
+                                .toList()
+                );
+    }
+
     private List<Message> doGetMessage(User sendUser,User receiveUser,Page page){
         return messageDao.getMessage(sendUser,receiveUser,page);
+    }
+
+    private List<Message> doGetMessage(User sendUser,User receiveUser,TimeInterval TimeInterval){
+        return messageDao.getMessage(sendUser,receiveUser,TimeInterval);
     }
 
     @Autowired

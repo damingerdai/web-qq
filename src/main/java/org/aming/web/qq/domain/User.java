@@ -23,8 +23,9 @@ public class User extends AbstractUserDetails implements UserDetails {
         return id;
     }
 
-    public void setId(String id) {
+    public User setId(String id) {
         this.id = id;
+        return this;
     }
 
     @Override
@@ -32,8 +33,9 @@ public class User extends AbstractUserDetails implements UserDetails {
         return username;
     }
 
-    public void setUsername(String username) {
+    public User setUsername(String username) {
         this.username = username;
+        return this;
     }
 
     @Override
@@ -41,16 +43,18 @@ public class User extends AbstractUserDetails implements UserDetails {
         return password;
     }
 
-    public void setPassword(String password) {
+    public User setPassword(String password) {
         this.password = password;
+        return this;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public User setEmail(String email) {
         this.email = email;
+        return this;
     }
 
     public User(String id, String username, String password, String email) {

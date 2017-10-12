@@ -3,6 +3,7 @@ package org.aming.web.qq.repository.jdbc.impl;
 import com.google.common.collect.Maps;
 import org.aming.web.qq.domain.Message;
 import org.aming.web.qq.domain.Page;
+import org.aming.web.qq.domain.TimeInterval;
 import org.aming.web.qq.domain.User;
 import org.aming.web.qq.repository.jdbc.MessageDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 
 import java.lang.reflect.Type;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +41,7 @@ public class MessageDaoImpl implements MessageDao {
         return jdbcTemplate.update(SQL_SAVE_MESSAGE,args);
     }
 
-    private static final String SQL_GET_MESSAGE = "SELECT id,sendUserId,receiveUserId,content,sendDate,sendDeleteFlag,receiveDeleteFlag FROM message A  WHERE (A.sendUserId = ? AND A.receiveUserId = ?) OR (A.sendUserId = ? AND A.receiveUserId = ?) ORDER BY A.sendDate DESC LIMIT ?,?";
+    private static final String SQL_GET_MESSAGE_PAGE = "SELECT id,sendUserId,receiveUserId,content,sendDate,sendDeleteFlag,receiveDeleteFlag FROM message A  WHERE (A.sendUserId = ? AND A.receiveUserId = ?) OR (A.sendUserId = ? AND A.receiveUserId = ?) ORDER BY A.sendDate DESC LIMIT ?,?";
     public List<Message> getMessage(User sendUser, User receiveUser, Page page) {
         Map<String,User> map = Maps.newHashMap();
         map.put(sendUser.getId(),sendUser);
@@ -60,19 +63,56 @@ public class MessageDaoImpl implements MessageDao {
                 Types.INTEGER
         };
         return jdbcTemplate.query(
-                SQL_GET_MESSAGE,
+                SQL_GET_MESSAGE_PAGE,
                 args,
                 argTypes,
-                (rs, i) -> {
-                    return new Message()
-                            .setId(rs.getString("id"))
-                            .setSendUser(map.get(rs.getString("sendUserId")))
-                            .setReceiveUser(map.get(rs.getString("receiveUserId")))
-                            .setContent(rs.getString("content"))
-                            .setSendDate(rs.getTimestamp("sendDate"))
-                            .setSendDeleteFlag(rs.getInt("sendDeleteFlag"))
-                            .setReceiveDeleteFlag(rs.getInt("receiveDeleteFlag"));
-                });
+                (rs, i) -> getMessageByResultSet(rs)
+                        .setSendUser(map.get(rs.getString("sendUserId")))
+                        .setReceiveUser(map.get(rs.getString("receiveUserId")))
+        );
+    }
+
+    private static final String SQL_GET_MESSAGE_TIME_INTERVAL = " SELECT id,sendUserId,receiveUserId,content,sendDate,sendDeleteFlag,receiveDeleteFlag FROM message A  WHERE (A.sendUserId = ? AND A.receiveUserId = ?) OR (A.sendUserId = ? AND A.receiveUserId = ?) AND A.sendDate BETWEEN ? AND ? ORDER BY A.sendDate DESC  ";
+    public List<Message> getMessage(User sendUser, User receiveUser, TimeInterval timeInterval) {
+        Map<String,User> map = Maps.newHashMap();
+        map.put(sendUser.getId(),sendUser);
+        map.put(receiveUser.getId(),receiveUser);
+        Object[] args = new Object[]{
+                sendUser.getId(),
+                receiveUser.getId(),
+                receiveUser.getId(),
+                sendUser.getId(),
+                timeInterval.getBeginDateTime(),
+                timeInterval.getEndDateTime()
+        };
+        for(Object obj : args){
+            System.out.println(obj);
+        }
+        int[] argTypes = new int[]{
+                Types.VARCHAR,
+                Types.VARCHAR,
+                Types.VARCHAR,
+                Types.VARCHAR,
+                Types.TIMESTAMP,
+                Types.TIMESTAMP
+        };
+        return jdbcTemplate.query(
+                SQL_GET_MESSAGE_TIME_INTERVAL,
+                args,
+                argTypes,
+                (rs, i) -> getMessageByResultSet(rs)
+                        .setSendUser(map.get(rs.getString("sendUserId")))
+                        .setReceiveUser(map.get(rs.getString("receiveUserId")))
+        );
+    }
+
+    private Message getMessageByResultSet(ResultSet rs) throws SQLException{
+        return new Message()
+                .setId(rs.getString("id"))
+                .setContent(rs.getString("content"))
+                .setSendDate(rs.getTimestamp("sendDate"))
+                .setSendDeleteFlag(rs.getInt("sendDeleteFlag"))
+                .setReceiveDeleteFlag(rs.getInt("receiveDeleteFlag"));
     }
 
     @Autowired
