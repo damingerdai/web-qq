@@ -29,10 +29,10 @@ public class UserDaoImpl implements UserDao{
     public User loadUserByUsername(String username) throws WebQQDaoException {
         try{
             List<User> list = jdbcTemplate.query(
-                    SQL_GET_USER_BY_USERNAME
-                    ,new Object[]{
+                    SQL_GET_USER_BY_USERNAME,
+                    new Object[]{
                             username
-                    }, ( rs, i) ->
+                    }, (rs, i) ->
                             newUserWithoutPasswordFormResultSet(rs)
                                     .setPassword(rs.getString("password"))
             );
@@ -51,8 +51,8 @@ public class UserDaoImpl implements UserDao{
     public List<User> getFriendsByUsername(String username) throws WebQQDaoException {
         try{
             return jdbcTemplate.query(
-                    SQL_GET_FRIENDS_BY_USERNAME
-                    ,new Object[]{
+                    SQL_GET_FRIENDS_BY_USERNAME,
+                    new Object[]{
                             username
                     },(rs,i) -> newUserWithoutPasswordFormResultSet(rs));
         } catch (Exception ex) {
@@ -98,8 +98,8 @@ public class UserDaoImpl implements UserDao{
                     relationship.getUserId2()
             };
             int[] argTypes = new int[] {
+                    Types.VARCHAR,
                     Types.VARCHAR
-                    ,Types.VARCHAR
             };
             return jdbcTemplate.queryForObject(
                     SQL_EXSIT_RELATIONSHIP,
