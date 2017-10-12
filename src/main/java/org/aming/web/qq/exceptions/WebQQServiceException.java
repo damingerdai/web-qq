@@ -36,6 +36,11 @@ public class WebQQServiceException extends RuntimeException{
         super();
     }
 
+    public WebQQServiceException(String message) {
+        super();
+        this.message = message;
+    }
+
     public WebQQServiceException(String message, WebQQDaoException cause) {
         super();
         this.message = message;
