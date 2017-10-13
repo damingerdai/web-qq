@@ -1,6 +1,7 @@
 package org.aming.web.qq.response;
 
 import org.aming.web.qq.exceptions.WebQQException;
+import org.aming.web.qq.exceptions.WebQQServiceException;
 
 import java.io.Serializable;
 
@@ -30,8 +31,10 @@ public class CommonResponse implements Serializable {
     public static WebQQException getErrorCommonResponse(Throwable error) {
         if(error instanceof WebQQException){
             return (WebQQException)error;
+        } else if (error instanceof WebQQServiceException) {
+            return new WebQQException(5001,error.getMessage());
         } else {
-            return new WebQQException(new RuntimeException(error.getMessage()));
+            return new WebQQException();
         }
     }
 
