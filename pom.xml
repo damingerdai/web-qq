@@ -106,6 +106,15 @@
 					<target>${java.version}</target>
 				</configuration>
 			</plugin>
+
+			<!--将Spring Boot中的application.properties占位符@...@修改为maven中常用的${...}-->
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<configuration>
+					<encoding>utf-8</encoding>
+					<useDefaultDelimiters>true</useDefaultDelimiters>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
