@@ -31,7 +31,7 @@ public class CommonResponse implements Serializable {
         if(error instanceof WebQQException){
             return (WebQQException)error;
         } else {
-            return new WebQQException(new Throwable(error.getMessage()));
+            return new WebQQException(new RuntimeException(error.getMessage()));
         }
     }
 
