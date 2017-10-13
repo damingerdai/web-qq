@@ -4,6 +4,8 @@ import org.aming.web.qq.domain.Message;
 import org.aming.web.qq.domain.Page;
 import org.aming.web.qq.domain.TimeInterval;
 import org.aming.web.qq.domain.User;
+import org.aming.web.qq.exceptions.WebQQDaoException;
+import org.aming.web.qq.exceptions.WebQQServiceException;
 import org.aming.web.qq.repository.jdbc.MessageDao;
 import org.aming.web.qq.repository.jdbc.UserDao;
 import org.aming.web.qq.service.MessageService;
@@ -35,7 +37,7 @@ public class MessageServiceImpl implements MessageService{
 
 
     @Override
-    public boolean saveMessage(Message message) {
+    public boolean saveMessage(Message message) throws WebQQServiceException {
         if(Objects.isNull(message.getSendUser())){
            message.setSendUser(new User(SecurityContextUtils.getCurrentUser()));
         }
@@ -47,56 +49,70 @@ public class MessageServiceImpl implements MessageService{
     }
 
     @Override
-    public List<Message> getMessage(@Nullable UserDetails sendUser, @Nonnull UserDetails receiveUser, Page page) {
-        if(Objects.isNull(sendUser)){
-            sendUser = SecurityContextUtils.getCurrentUser();
+    public List<Message> getMessage(@Nullable UserDetails sendUser, @Nonnull UserDetails receiveUser, Page page) throws WebQQServiceException {
+        try{
+            if(Objects.isNull(sendUser)){
+                sendUser = SecurityContextUtils.getCurrentUser();
+            }
+            List<Message> result = doGetMessage(
+                    userDao.loadUserByUsername(sendUser.getUsername()), //param: sendUser
+                    userDao.loadUserByUsername(receiveUser.getUsername()), //param: receiveUser
+                    page //param: page
+            );
+            return result
+                    .stream()
+                    .sorted(
+                            Comparator
+                                    .comparing(
+                                            Message ::getSendDate
+                                    ))
+                    .collect(
+                            Collectors
+                                    .toList()
+                    );
+        } catch (WebQQDaoException ex) {
+            throw new WebQQServiceException("获取聊天记录失败", ex);
+        } catch (Exception ex) {
+            throw new WebQQServiceException("获取聊天记录失败");
         }
-        List<Message> result = doGetMessage(
-                userDao.loadUserByUsername(sendUser.getUsername()), //param: sendUser
-                userDao.loadUserByUsername(receiveUser.getUsername()), //param: receiveUser
-                page //param: page
-        );
-        return result
-                .stream()
-                .sorted(
-                        Comparator
-                                .comparing(
-                                        Message ::getSendDate
-                                ))
-                .collect(
-                        Collectors
-                                .toList()
-                );
+
     }
 
     @Override
-    public List<Message> getMessage(@Nullable UserDetails sendUser,@Nonnull UserDetails receiveUser, TimeInterval timeInterval) {
-        if(Objects.isNull(sendUser)){
-            sendUser = SecurityContextUtils.getCurrentUser();
+    public List<Message> getMessage(@Nullable UserDetails sendUser,@Nonnull UserDetails receiveUser, TimeInterval timeInterval) throws WebQQServiceException {
+        try{
+            if(Objects.isNull(sendUser)){
+                sendUser = SecurityContextUtils.getCurrentUser();
+            }
+            List<Message> result = doGetMessage(
+                    userDao.loadUserByUsername(sendUser.getUsername()), //param: sendUser
+                    userDao.loadUserByUsername(receiveUser.getUsername()), //param: receiveUser
+                    timeInterval //param: timeInterval
+            );
+            return result
+                    .stream()
+                    .sorted(
+                            Comparator
+                                    .comparing(
+                                            Message ::getSendDate
+                                    ))
+                    .collect(
+                            Collectors
+                                    .toList()
+                    );
+        } catch (WebQQDaoException ex) {
+            throw new WebQQServiceException("获取聊天记录失败", ex);
+        } catch (Exception ex) {
+            throw new WebQQServiceException("获取聊天记录失败");
         }
-        List<Message> result = doGetMessage(
-                userDao.loadUserByUsername(sendUser.getUsername()), //param: sendUser
-                userDao.loadUserByUsername(receiveUser.getUsername()), //param: receiveUser
-                timeInterval //param: timeInterval
-        );
-        return result
-                .stream()
-                .sorted(
-                        Comparator
-                                .comparing(
-                                        Message ::getSendDate
-                                ))
-                .collect(
-                        Collectors
-                                .toList()
-                );
+
     }
 
-    private List<Message> doGetMessage(User sendUser,User receiveUser,Page page){
+    private List<Message> doGetMessage(User sendUser,User receiveUser,Page page) throws WebQQDaoException {
         return messageDao.getMessage(sendUser,receiveUser,page);
     }
 
-    private List<Message> doGetMessage(User sendUser,User receiveUser,TimeInterval TimeInterval){
+    private List<Message> doGetMessage(User sendUser,User receiveUser,TimeInterval TimeInterval) throws WebQQDaoException {
         return messageDao.getMessage(sendUser,receiveUser,TimeInterval);
     }
 
