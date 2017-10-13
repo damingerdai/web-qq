@@ -68,9 +68,9 @@ public class CommonResponse implements Serializable {
         this.success = DEFAULT_SUCCESS_FLAG;
     }
 
-    public CommonResponse(boolean succcess, Object data) {
+    public CommonResponse(boolean success, Object data) {
         super();
-        this.success = succcess;
+        this.success = success;
         this.data = data;
     }
 
