@@ -38,3 +38,6 @@ nbdist/
 
 ### Angular2 ###
 src/main/resources/static/
+
+### Visual Studio Code ###
+.vscode/
