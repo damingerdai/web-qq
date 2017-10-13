@@ -52,7 +52,7 @@ mvn spring-boot:run
 * 前端：Visual Studio Code
 * 后端：IntelliJ IDEA Community Edition
 ### 浏览器
-Chrome、Microsoft
+Chrome、Microsoft Edge
 ### 开发平台
 Winodwos10 企业版
 ### 其他
