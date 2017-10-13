@@ -19,8 +19,8 @@ public class CommonResponse implements Serializable {
     private WebQQException error;
 
     @Deprecated
-    public static CommonResponse getCommonResponse(boolean succcess,Object data){
-        return new CommonResponse(succcess,data);
+    public static CommonResponse getCommonResponse(boolean success,Object data){
+        return new CommonResponse(success,data);
     }
 
     public static CommonResponse getSuccessCommonResponse(Object data){
