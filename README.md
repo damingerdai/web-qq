@@ -23,6 +23,7 @@
 ### 2.编译angular页面
 进入angular目录下，执行：
 ```bash
+npm install
 ng build
 ```
 然后可以发现在resources目录下会多出一个
