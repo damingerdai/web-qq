@@ -74,9 +74,9 @@ public class CommonResponse implements Serializable {
         this.data = data;
     }
 
-    public CommonResponse(boolean succcess,WebQQException error){
+    public CommonResponse(boolean success,WebQQException error){
         super();
-        this.success = succcess;
+        this.success = success;
         this.error = error;
     }
 }
