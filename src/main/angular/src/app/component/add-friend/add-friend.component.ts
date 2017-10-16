@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { User } from '../../domain/user';
 
 @Component({
@@ -12,7 +13,10 @@ export class AddFriendComponent implements OnInit {
 
   friends: User[];
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private router: Router
+  ) { }
 
   ngOnInit() {
     // this.users = USERS;
@@ -38,7 +42,7 @@ export class AddFriendComponent implements OnInit {
     body.email = user.email;
     this.http.post('/webqq/addRelationship', body).
       subscribe(data => {
-        window.location.href = '/index.html';
+        this.router.navigate(['/myFriends']);
       }, error => {
 
       });
