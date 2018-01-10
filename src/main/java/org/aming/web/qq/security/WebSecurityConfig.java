@@ -38,6 +38,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception{
         http.authorizeRequests()
+				.antMatchers("/swagger*").permitAll()
+				.antMatchers("/v2/api-docs").permitAll()
                 .antMatchers("/**/addUser").permitAll()
                 .anyRequest().authenticated()
                 .and()
