@@ -1,5 +1,9 @@
 # Angular练手项目之Web聊天室
 
+## 2018-0725更新
+截止2018年7月25日，该demo已经有26个star、13个fork了，谢谢大家的支持，只是当时自己刚入前端，很多都不懂，再加上Angular6已经发布，真的没有必要再参考该demo。
+如果继续参考，推荐各位初学者可以看看我另外一个[demo](https://github.com/damingerdai/inventory)，同样是基于Angular + Spring Boot。这个demo里的angular部分可能更合适你们。
+
 ## 说明
 这个demo是我用三周时间学习Angular2的一个小小练习。前端使用了Angular技术，后端则使用Spring Boot，使用数据库为mysql，采用maven进行构建项目。
 
