@@ -1,5 +1,9 @@
 # Angular练手项目之Web聊天室
 
+## 2021-1125更新
+
+基于angular material的[hoteler-web](https://github.com/damingerdai/hoteler-web), 其[后端](https://github.com/damingerdai/hoteler)同样使用spring boot.推荐参考这个作为入门。
+
 ## 2018-0725更新
 截止2018年7月25日，该demo已经有26个star、13个fork了，谢谢大家的支持，只是当时自己刚入前端，很多都不懂，再加上Angular6已经发布，真的没有必要再参考该demo。
 如果继续参考，推荐各位初学者可以看看我另外一个[demo](https://github.com/damingerdai/inventory)，同样是基于Angular + Spring Boot。这个demo里的angular部分可能更合适你们。
